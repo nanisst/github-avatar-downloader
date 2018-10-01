@@ -8,6 +8,7 @@ var repoName = process.argv[3];
 
 console.log('Welcome to the GitHub Avatar Downloader!');
 
+//key acces and webpage of the API
 function getRepoContributors(repoOwner, repoName, cb) {
   var options = {
     url: "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/contributors",
@@ -18,13 +19,14 @@ function getRepoContributors(repoOwner, repoName, cb) {
     }
   };
 
+
   request(options, function(err, res, body) {
     var data = JSON.parse(body);
     cb(err, data);
   });
 }
 
-
+//call the repos and explain posible errors. Get the urls of the avatars.
 getRepoContributors(repoOwner, repoName, function(err, result) {
   if (repoOwner === undefined || repoName === undefined ) {
     console.log("Error: please write jquery twice with an space.");
@@ -36,13 +38,11 @@ getRepoContributors(repoOwner, repoName, function(err, result) {
       downloadImageByUrl(result[i].avatar_url, __dirname + "/avatar/" + result[i].login + ".jpg");
     }
   }
-
-
 });
+//__dirname == .  (Because node can't read dots "." )
 
 
-//__dirname == .
-
+//access to every img using fs librery.
 function downloadImageByUrl(url, filePath) {
   request.get(url)
        .on('error', function (err) {
