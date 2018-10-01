@@ -2,6 +2,10 @@ var request = require('request');
 var fs = require('fs');
 var myToken = require('./secrets');
 
+
+var repoOwner =  process.argv[2];
+var repoName = process.argv[3];
+
 console.log('Welcome to the GitHub Avatar Downloader!');
 
 function getRepoContributors(repoOwner, repoName, cb) {
@@ -21,13 +25,18 @@ function getRepoContributors(repoOwner, repoName, cb) {
 }
 
 
-getRepoContributors("jquery", "jquery", function(err, result) {
-  console.log("Errors:", err);
-  console.log("Result:", result);
-  for (var i = 0; i < result.length; i++) {
-    console.log("urls: ", result[i].avatar_url);
-    downloadImageByUrl(result[i].avatar_url, __dirname + "/avatar/" + result[i].login + ".jpg");
+getRepoContributors(repoOwner, repoName, function(err, result) {
+  if (repoOwner === undefined || repoName === undefined ) {
+    console.log("Error: please write jquery twice with an space.");
+  } else {
+    console.log("Errors:", err);
+    console.log("Result:", result);
+    for (var i = 0; i < result.length; i++) {
+      console.log("urls: ", result[i].avatar_url);
+      downloadImageByUrl(result[i].avatar_url, __dirname + "/avatar/" + result[i].login + ".jpg");
+    }
   }
+
 
 });
 
