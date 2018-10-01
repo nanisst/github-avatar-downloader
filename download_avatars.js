@@ -1,4 +1,5 @@
 var request = require('request');
+var fs = require('fs');
 var myToken = require('./secrets');
 
 console.log('Welcome to the GitHub Avatar Downloader!');
@@ -25,8 +26,35 @@ getRepoContributors("jquery", "jquery", function(err, result) {
   console.log("Result:", result);
   for (var i = 0; i < result.length; i++) {
     console.log("urls: ", result[i].avatar_url);
+    downloadImageByUrl(result[i].avatar_url, __dirname + "/avatar/" + result[i].login + ".jpg");
   }
+
 });
+
+
+//__dirname == .
+
+function downloadImageByUrl(url, filePath) {
+  request.get(url)
+       .on('error', function (err) {
+         throw err;
+       })
+       .on('response', function (response) {
+         console.log('Response Status Message: ', response.headers['content-type']);
+         console.log('Downloading image...');
+       })
+       .on('end',function(){
+        console.log('Download complete.');
+       })
+       .pipe(fs.createWriteStream(filePath));
+
+}
+
+
+
+
+
+
 
 //nanisst:614ec2b77d8194602b3582561f5a1b6157268b37
 //https://github.com/settings/tokens
